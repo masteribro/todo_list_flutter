@@ -15,46 +15,58 @@ class _HomePageState extends State<HomePage> {
   List maplist = [];
   Widget _buildTodoItem(String todoText) {
     return ListTile(
-        title: Text(todoText)
+        title: Text(todoText),
+      trailing: InkWell(
+          onTap: (){
+            setState((){
+             hassan=!hassan;
+            maplist.remove(todoText);
+            });
+          },
+          child:  const Icon(Icons.delete, )),
     );
   }
-  var hassan;
-   int? index;
+  bool hassan = false;
   meth(){
     setState(() {
-       index = maplist.length;
-      maplist.add('Item ' + todoController.text.toString());
+      maplist.add(todoController.text.toString());
     });
-    print(index);
     todoController.clear();
 
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Todo-list'),),
-      body: Column(
-        children: [
-         TextField(
+      appBar: AppBar(title: const Text('Todo-list'),
+      centerTitle: true,
+      backgroundColor: Colors.black,
+      ),
 
-           controller: todoController,
-         ),
-          ElevatedButton(
-              onPressed: ()=>meth(),
-              child: const Text('Add', style: TextStyle(color: Colors.black),)
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: maplist.length,
-            itemBuilder: (BuildContext context, int index) {
-              
-                return index < maplist.length?_buildTodoItem(maplist[index]): Text('Add Items');
-              
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+           TextField(
 
-            },
+             controller: todoController,
+           ),
+            ElevatedButton(
+                onPressed: ()=>meth(),
+                child: const Text('Add', style: TextStyle(color: Colors.black),)
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: maplist.length,
+              itemBuilder: (BuildContext context, int index) {
 
-          )
-        ],
+                  return index < maplist.length?_buildTodoItem(maplist[index]): Text('Add Items');
+
+
+              },
+
+            )
+          ],
+        ),
       ),
     );
   }
