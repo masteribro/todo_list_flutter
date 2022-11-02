@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:todo_list/LocalStorage/session_manager.dart';
+import 'package:todo_list/Pages/paystack.dart';
 import 'package:todo_list/state/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,7 +27,13 @@ class _HomePageState extends State<HomePage> {
       );}
     );
   }
-
+  TodoProvider? todoProvider;
+@override
+  void initState() {
+    super.initState();
+    todoProvider = Provider.of<TodoProvider>(context,listen:false);
+    todoProvider?.maplist = SessionManager.getTodos() ?? [];
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +75,14 @@ class _HomePageState extends State<HomePage> {
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
                 )
-
+              ),
+              ElevatedButton(onPressed: (){ Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  PayStack()),
+              );}, child: const Text('Pay for this App'),
+                style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+              )
               ),
               Consumer<TodoProvider>(
                 builder: (_,value,__){
@@ -77,7 +91,14 @@ class _HomePageState extends State<HomePage> {
                     itemCount: value.maplist.length,
                     itemBuilder: (BuildContext context, int index) {
 
-                      return index < value.maplist.length? buildTodoItem( value.maplist[index]): Text('Add Items');
+                      return  Dismissible(
+                        key: Key(value.maplist[index]),
+                        onDismissed: (direction) => value.maplist.removeAt(index),
+                        background: Container(color: Colors.black12),
+                        child: index < value.maplist.length? buildTodoItem( value.maplist[index]): Text('Add Items'),
+                      );
+
+
 
 
                     },
@@ -91,4 +112,5 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 }
